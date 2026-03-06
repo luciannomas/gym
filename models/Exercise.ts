@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { USE_MEMORY_DB, MemoryExercise } from "@/lib/inMemoryDB";
 
 export interface ExerciseDocument extends Document {
   name: string;
@@ -24,4 +25,6 @@ const ExerciseSchema = new Schema<ExerciseDocument>(
   { timestamps: true }
 );
 
-export default mongoose.models.Exercise || mongoose.model<ExerciseDocument>("Exercise", ExerciseSchema);
+const MongoExercise = mongoose.models.Exercise || mongoose.model<ExerciseDocument>("Exercise", ExerciseSchema);
+
+export default (USE_MEMORY_DB ? MemoryExercise : MongoExercise) as any;

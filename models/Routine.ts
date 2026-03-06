@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { USE_MEMORY_DB, MemoryRoutine } from "@/lib/inMemoryDB";
 
 const RoutineExerciseSchema = new Schema({
   exerciseId: { type: Schema.Types.ObjectId, ref: "Exercise", required: true },
@@ -34,4 +35,6 @@ const RoutineSchema = new Schema<RoutineDocument>(
   { timestamps: true }
 );
 
-export default mongoose.models.Routine || mongoose.model<RoutineDocument>("Routine", RoutineSchema);
+const MongoRoutine = mongoose.models.Routine || mongoose.model<RoutineDocument>("Routine", RoutineSchema);
+
+export default (USE_MEMORY_DB ? MemoryRoutine : MongoRoutine) as any;

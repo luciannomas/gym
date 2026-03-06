@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 import { Role, Plan } from "@/types";
+import { USE_MEMORY_DB, MemoryUser } from "@/lib/inMemoryDB";
 
 export interface UserDocument extends Document {
   name: string;
@@ -28,4 +29,6 @@ const UserSchema = new Schema<UserDocument>(
   { timestamps: true }
 );
 
-export default mongoose.models.User || mongoose.model<UserDocument>("User", UserSchema);
+const MongoUser = mongoose.models.User || mongoose.model<UserDocument>("User", UserSchema);
+
+export default (USE_MEMORY_DB ? MemoryUser : MongoUser) as any;
