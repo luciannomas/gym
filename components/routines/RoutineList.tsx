@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Trash2, ChevronDown, ChevronUp, Plus, Dumbbell, Play, Check, LinkIcon } from "lucide-react";
+import { Trash2, ChevronDown, ChevronUp, Plus, Dumbbell, Play, Check, LinkIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { IRoutine } from "@/types";
@@ -36,6 +36,8 @@ export default function RoutineList() {
   const [newVideoUrl, setNewVideoUrl] = useState("");
   const [savingVideo, setSavingVideo] = useState(false);
   const [editingVideo, setEditingVideo] = useState(false);
+  const [page, setPage] = useState(0);
+  const PAGE_SIZE = 5;
 
   const fetchRoutines = useCallback(() => {
     setLoading(true);
@@ -112,30 +114,39 @@ export default function RoutineList() {
     </Card>
   );
 
+  const totalPages = Math.ceil(routines.length / PAGE_SIZE);
+  const paged = routines.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+
   return (
     <>
-      <div className="space-y-3">
-        {routines.map((routine) => (
-          <Card key={routine._id} className="bg-zinc-900 border-zinc-800">
+      <div className="space-y-4">
+        {paged.map((routine) => (
+          <Card key={routine._id} className="bg-zinc-900 border-zinc-800 rounded-2xl overflow-hidden">
             <CardContent className="p-0">
               <button
-                className="w-full p-4 flex items-center justify-between text-left"
+                className="w-full px-4 py-4 flex items-center gap-3 text-left"
                 onClick={() => setExpanded(expanded === routine._id ? null : routine._id)}
               >
-                <div>
-                  <p className="font-medium text-zinc-100">{routine.name}</p>
-                  <p className="text-xs text-zinc-500">{routine.days.length} días · {routine.days.reduce((a, d) => a + d.exercises.length, 0)} ejercicios</p>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-zinc-100 truncate">{routine.name}</p>
+                  <p className="text-xs text-zinc-500 mt-0.5">
+                    {routine.days.length} días · {routine.days.reduce((a, d) => a + d.exercises.length, 0)} ejercicios
+                  </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 flex-shrink-0">
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-8 h-8 text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                    className="w-8 h-8 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg"
                     onClick={(e) => { e.stopPropagation(); deleteRoutine(routine._id); }}
                   >
                     <Trash2 size={14} />
                   </Button>
-                  {expanded === routine._id ? <ChevronUp size={16} className="text-zinc-500" /> : <ChevronDown size={16} className="text-zinc-500" />}
+                  <div className="w-7 h-7 flex items-center justify-center">
+                    {expanded === routine._id
+                      ? <ChevronUp size={16} className="text-zinc-400" />
+                      : <ChevronDown size={16} className="text-zinc-400" />}
+                  </div>
                 </div>
               </button>
 
@@ -185,6 +196,29 @@ export default function RoutineList() {
           </Card>
         ))}
       </div>
+
+      {/* Paginación */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between pt-2">
+          <button
+            onClick={() => { setPage((p) => p - 1); setExpanded(null); }}
+            disabled={page === 0}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium disabled:opacity-30 disabled:cursor-not-allowed text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors"
+          >
+            <ChevronLeft size={15} /> Anterior
+          </button>
+          <span className="text-xs text-zinc-500">
+            {page + 1} / {totalPages}
+          </span>
+          <button
+            onClick={() => { setPage((p) => p + 1); setExpanded(null); }}
+            disabled={page >= totalPages - 1}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium disabled:opacity-30 disabled:cursor-not-allowed text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors"
+          >
+            Siguiente <ChevronRight size={15} />
+          </button>
+        </div>
+      )}
 
       <Dialog open={!!videoEx} onOpenChange={() => setVideoEx(null)}>
         {videoEx && (
