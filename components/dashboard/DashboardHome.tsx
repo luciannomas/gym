@@ -168,9 +168,9 @@ export default function DashboardHome() {
         </div>
 
         {loading ? (
-          <div className="space-y-3">
+          <div className="flex flex-col gap-3">
             {[1, 2].map((i) => (
-              <div key={i} className="h-16 rounded-xl bg-zinc-900 animate-pulse" />
+              <div key={i} className="h-16 rounded-2xl bg-zinc-900 animate-pulse" />
             ))}
           </div>
         ) : routines.length === 0 ? (
@@ -183,18 +183,16 @@ export default function DashboardHome() {
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-3">
+          <div className="flex flex-col gap-3">
             {routines.map((routine) => (
-              <Link key={routine._id} href="/dashboard/routines">
-                <Card className="bg-zinc-900 border-zinc-800 hover:border-zinc-600 transition-colors">
-                  <CardContent className="p-4 flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-zinc-100">{routine.name}</p>
-                      <p className="text-xs text-zinc-500">{routine.days.length} días</p>
-                    </div>
-                    <ChevronRight size={18} className="text-zinc-600" />
-                  </CardContent>
-                </Card>
+              <Link key={routine._id} href="/dashboard/routines" className="block">
+                <div className="bg-zinc-900 border border-zinc-800 hover:border-zinc-600 transition-colors rounded-2xl px-4 py-3.5 flex items-center justify-between">
+                  <div>
+                    <p className="font-semibold text-zinc-100">{routine.name}</p>
+                    <p className="text-xs text-zinc-500 mt-0.5">{routine.days.length} días</p>
+                  </div>
+                  <ChevronRight size={18} className="text-zinc-600 flex-shrink-0" />
+                </div>
               </Link>
             ))}
           </div>
