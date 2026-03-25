@@ -4,7 +4,8 @@
       "Read(//c/Users/fiona/.claude/plugins/**)",
       "Read(//c/Users/fiona/.claude/**)",
       "Bash(find /c/Users/fiona/OneDrive/Escritorio/gym/types -type f -name *.ts)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(taskkill /F /IM node.exe)"
     ],
     "additionalDirectories": [
       "c:\\Users\\fiona\\OneDrive\\Escritorio\\gym\\.claude\\skills"

@@ -1,5 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
+
+function toYouTubeEmbed(url: string): string {
+  const short = url.match(/youtu\.be\/([^?&]+)/);
+  if (short) return `https://www.youtube.com/embed/${short[1]}`;
+  const shorts = url.match(/youtube\.com\/shorts\/([^?&]+)/);
+  if (shorts) return `https://www.youtube.com/embed/${shorts[1]}`;
+  const watch = url.match(/[?&]v=([^&]+)/);
+  if (watch) return `https://www.youtube.com/embed/${watch[1]}`;
+  return url;
+}
+
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -146,7 +157,7 @@ export default function ExerciseList() {
               {selected.videoUrl && !selected.gifUrl && (
                 <div className="aspect-video rounded-xl overflow-hidden bg-zinc-800">
                   <iframe
-                    src={selected.videoUrl.replace("watch?v=", "embed/")}
+                    src={toYouTubeEmbed(selected.videoUrl)}
                     className="w-full h-full"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
